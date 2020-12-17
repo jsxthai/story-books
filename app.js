@@ -4,8 +4,10 @@ import morgan from 'morgan';
 import exphbs from 'express-handlebars';
 
 // __dirname in es module
-import path from 'path';
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+// https://stackoverflow.com/questions/46745014/alternative-for-dirname-in-node-when-using-the-experimental-modules-flag
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // import source
 import { connectDB } from './config/db.js';
@@ -19,11 +21,13 @@ const PORT = process.env.PORT;
 
 // app
 const app = express();
+app.use(express.static(path.join(__dirname, 'public')))
+console.log(path.join(__dirname, 'public'))
 app.engine('.hbs', exphbs({ defaultLayout: 'main', extname: '.hbs'}));
 app.set('view engine', '.hbs');
 
 // static folder
-app.use(express.static(path.join(__dirname, 'public')));
+
 
 // routers
 app.use('/', routers);
