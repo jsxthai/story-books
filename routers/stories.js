@@ -78,6 +78,7 @@ router.get('/:id', ensureAuth, async (req, res) => {
         if (!story) {
             return res.render('error/404');
         } else {
+            // console.log(story.createAt)
             res.render('stories/show', {
                 story,
             })
