@@ -1,11 +1,10 @@
 import express from 'express';
-import passport from 'passport';
-
+import { ensureAuth, ensureGuest } from '../middleware/auth.js';
 const router = express.Router();
 
 // @desc    Loging page
 // @Route   GET /
-router.get('/', (req, res) => {
+router.get('/', ensureGuest, (req, res) => {
     res.render('login', {
         layout: 'login',
     });
@@ -13,8 +12,11 @@ router.get('/', (req, res) => {
 
 // @desc    Google auth callback
 // @Route   GET /auth/google/callback
-router.get('/dashboard', (req, res) => {
-    res.render('dashboard');
+router.get('/dashboard', ensureAuth, (req, res) => {
+    console.log(req)
+    res.render('dashboard', {
+        name: req.user.firstName
+    });
 })
 
 export default router;

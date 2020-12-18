@@ -10,12 +10,11 @@ export const applyPassportStrategy = (passport) => {
         callbackURL: '/auth/google/callback'
     },
     async (accessToken, refreshToken, profile, done) => {
-        console.log(profile)
         const newUser = {
             googleId: profile.id,
             displayName: profile.displayName,
-            firstName: profile.name.givenName,
-            lastName: profile.name.familyName,
+            lastName: profile.name.givenName,
+            firstName: profile.name.familyName,
             image: profile.photos[0].value,
         }
 

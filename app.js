@@ -5,23 +5,25 @@ import morgan from 'morgan';
 import exphbs from 'express-handlebars';
 import passport from 'passport';
 import session from 'express-session';
+import {default as connectMongo} from 'connect-mongo';
+import mongoose from 'mongoose';
+import { applyPassportStrategy } from './config/passport.js';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { connectDB } from './config/db.js';
+//import router
+import mainRouter from './routers/index.js';
+import authRouter from './routers/auth.js';
+
+// https://stackoverflow.com/questions/39052429/es6-how-to-import-connect-mongo-session
+const MongoStore = connectMongo(session);
 
 // passport config
-import { applyPassportStrategy } from './config/passport.js';
 applyPassportStrategy(passport);
 
 // __dirname in es module
 // https://stackoverflow.com/questions/46745014/alternative-for-dirname-in-node-when-using-the-experimental-modules-flag
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// import source
-import { connectDB } from './config/db.js';
-
-//import router
-import mainRouter from './routers/index.js';
-import authRouter from './routers/auth.js';
 
 // load config
 connectDB();
@@ -43,6 +45,7 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false,
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
 }));
 
 // passport middleware
