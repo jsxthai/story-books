@@ -1,20 +1,20 @@
 import express from 'express';
+import passport from 'passport';
 
 const router = express.Router();
 
-// @desc    Login/Langding page
+// @desc    Loging page
 // @Route   GET /
 router.get('/', (req, res) => {
-    res.render("login", {
-        layout: 'login'
+    res.render('login', {
+        layout: 'login',
     });
 });
 
-// @desc    Login/Langding page
-// @Route   GET /dashboard
+// @desc    Google auth callback
+// @Route   GET /auth/google/callback
 router.get('/dashboard', (req, res) => {
-    res.render("dashboard");
-});
-
+    res.render('dashboard');
+})
 
 export default router;
