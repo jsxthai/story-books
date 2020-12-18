@@ -23,6 +23,7 @@ export const applyPassportStrategy = (passport) => {
             if(user) {
                 done(null, user);
             } else {
+                // create user
                 user = await User.create(newUser);
                 done(null, user); 
             }

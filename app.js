@@ -14,6 +14,7 @@ import { connectDB } from './config/db.js';
 //import router
 import mainRouter from './routers/index.js';
 import authRouter from './routers/auth.js';
+import storiesRouter from './routers/stories.js';
 
 // https://stackoverflow.com/questions/39052429/es6-how-to-import-connect-mongo-session
 const MongoStore = connectMongo(session);
@@ -33,6 +34,10 @@ const PORT = process.env.PORT;
 // app
 const app = express();
 console.log(path.join(__dirname, 'public'));
+
+// body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // static folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -55,6 +60,7 @@ app.use(passport.session());
 // routers
 app.use('/', mainRouter);
 app.use('/auth', authRouter);
+app.use('/stories', storiesRouter);
 
 if(process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 app.listen(PORT, () => console.log(`server running in ${process.env.NODE_ENV} mode on port ${PORT}`));
