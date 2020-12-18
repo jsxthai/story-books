@@ -67,6 +67,28 @@ router.get('/edit/:id', ensureAuth, async (req, res) => {
     }
 })
 
+// @desc    show story
+// @Route   GET /stories/:id
+router.get('/:id', ensureAuth, async (req, res) => {
+    try {
+        let story = await Story.findById({ _id: req.params.id })
+            .populate('user')
+            .lean();
+
+        if (!story) {
+            return res.render('error/404');
+        } else {
+            res.render('stories/show', {
+                story,
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        res.render('error/500');
+    }
+});
+
+
 // @desc    update story
 // @route   PUT / stories/:id
 router.put('/:id', ensureAuth, async (req, res) => {
