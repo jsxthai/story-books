@@ -5,12 +5,14 @@ import morgan from 'morgan';
 import exphbs from 'express-handlebars';
 import passport from 'passport';
 import session from 'express-session';
+import methodOverride from 'method-override';
 import {default as connectMongo} from 'connect-mongo';
 import mongoose from 'mongoose';
 import { applyPassportStrategy } from './config/passport.js';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { connectDB } from './config/db.js';
+import { formatDate, truncate, stripTags, editIcon, select } from './helpers/hbs.js';
 //import router
 import mainRouter from './routers/index.js';
 import authRouter from './routers/auth.js';
@@ -39,11 +41,31 @@ console.log(path.join(__dirname, 'public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// method override
+app.use(methodOverride((req, res) => {
+    console.log('req pk', req)
+    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+        let method = req.body._method;
+        delete req.body._method;
+        return method;    
+    }
+}));
+
 // static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
 // handlebars
-app.engine('.hbs', exphbs({ defaultLayout: 'main', extname: '.hbs'}));
+// set default layout main.hbs file
+app.engine('.hbs', exphbs({ 
+    defaultLayout: 'main', 
+    extname: '.hbs', 
+    helpers: {
+        formatDate,
+        truncate,
+        stripTags,
+        editIcon, 
+        select
+}}));
 app.set('view engine', '.hbs');
 
 app.use(session({
@@ -56,6 +78,12 @@ app.use(session({
 // passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+// global var
+app.use((req, res, next) => {
+    res.locals.user = req.user || null;
+    next();
+})
 
 // routers
 app.use('/', mainRouter);
