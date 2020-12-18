@@ -35,7 +35,7 @@ const PORT = process.env.PORT;
 
 // app
 const app = express();
-console.log(path.join(__dirname, 'public'));
+// console.log(path.join(__dirname, 'public'));
 
 // body parser
 app.use(express.json());
@@ -43,7 +43,6 @@ app.use(express.urlencoded({ extended: false }));
 
 // method override
 app.use(methodOverride((req, res) => {
-    console.log('req pk', req)
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
         let method = req.body._method;
         delete req.body._method;
