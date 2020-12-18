@@ -123,5 +123,21 @@ router.delete('/:id', ensureAuth, async (req, res) => {
     }
 });
 
+// @desc    user stories
+// @route   GET /stories/user/:userId
+router.get('/user/:userId', ensureAuth, async(req, res) => {
+    try {
+        const stories = await Story.find({ user: req.params.userId })
+            .populate('user')
+            .lean();
+    res.render('stories', {
+        stories,
+    })
+        
+    } catch (error) {
+        console.log(error);
+        res.render('error/500');
+    }
+})
 
 export default router;
